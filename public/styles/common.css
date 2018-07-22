@@ -1,0 +1,90 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+header {
+    background-color: rgba(63,82,191,0.5);
+}
+.brand {
+    height: 100px;
+    padding: 10px;
+    font-family: consolas;
+    position: relative;
+}
+.brand-name {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+.brand-title {
+
+}
+.brand a {
+    text-decoration: none;
+    color: #000;
+}
+
+
+.center {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 0;
+    padding: 10px;
+}
+.nav a {
+    color: #000;
+    text-decoration: none;
+    font-size: 18px;
+    font-family: Consolas;
+}
+.nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    flex-grow: 1;
+}
+
+footer {
+    height: 50px;
+    background-color: rgba(63,82,191,0.5);
+}
+
+
+.errors {
+    padding: 20px;
+    font-family: Consolas, sans-serif;
+    font-size: 18px;
+}
+
+.errors a {
+    display: block;
+    margin-top: 20px;
+}
+
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 320px;
+    margin: auto;
+}
+
+form input {
+    margin-top: 20px;
+    height: 30px;
+    padding: 0 5px;
+}
+
+form button {
+    margin-top: 30px;
+    height: 50px;
+}

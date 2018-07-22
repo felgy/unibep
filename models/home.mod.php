@@ -17,7 +17,7 @@
 $data = [];
 
 $data['index'] = [
-    'title' => 'Simple PHP framework',
+    'title' => 'SIA Unibep datu sistēma',
     'description' => null,
     'keywords' => null,
 ];
