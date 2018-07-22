@@ -1,30 +1,34 @@
 <?php
 
+// Autoload classes.
 spl_autoload_register(function ($class) {
     require_once ROOT . '/' . str_replace('\\', '/', $class) . '.php';
 });
 
+// Exception  handler.
 function my_exception_handler($e)
 {
     show_error($e->getMessage(), $e->getCode());
 }
 
-function show_error($message, $responce)
+// Display errors.
+function show_error($message, $code)
 {
-    http_response_code($responce);
-    switch ($responce) {
+    http_response_code($code);
+    switch ($code) {
         case 404:
             $data['msg'] = $message;
             echo view($data, 'errors', '404');
             break;
         default:
             $data['msg'] = $message;
-            $data['code'] = $responce;
+            $data['code'] = $code;
             echo view($data, 'errors', 'production');
             break;
     }
 }
 
+// Initiates the activity for generating the requested page.
 function get_page()
 {
     $route = router();
@@ -43,6 +47,7 @@ function get_page()
 
 }
 
+// Strike from request controller and model.
 function router()
 {
     $route = [
@@ -60,12 +65,14 @@ function router()
     return $route;
 }
 
-function get_controller()
+// Returns controller name.
+function controller()
 {
     $route = router();
     return $route['controller'];
 }
 
+// Fill in the template with the data and place the result in the variable.
 function view($data, $controller, $template)
 {
     $template = TEMPLATES . '/' . $controller . '/' . $template . '.tpl.php';
@@ -80,12 +87,14 @@ function view($data, $controller, $template)
 
 }
 
+// Put together templates and return the finished page.
 function render($data, $controller, $template)
 {
     $data['content'] = view($data, $controller, $template);
     return view($data, 'main', BASE_LAYOUT);
 }
 
+// Prepare and return the relevant data array.
 function get_data($action, $controller)
 {
     $model = MODELS . '/' . $controller . '.mod.php';
@@ -102,6 +111,7 @@ function get_data($action, $controller)
 
 }
 
+// Initiates the preparation of data and templates.
 function run($action, $controller)
 {
     $data = get_data($action, $controller);

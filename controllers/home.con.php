@@ -2,5 +2,5 @@
 
 function index()
 {
-    return run(__FUNCTION__, get_controller());
+    return run(__FUNCTION__, controller());
 }

@@ -6,11 +6,13 @@
 
 /**
  * Database object for data from the database, uncomment if necessary to work with DB.
-//$db = new \core\Db();
+ */ 
+// $db = new \core\Db();
+
 
 /**
  * Data collections for actions.
- * In this array key there are action names.
+ * In $data array key there are action names.
  */
 $data = [];
 
