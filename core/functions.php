@@ -65,13 +65,6 @@ function router()
     return $route;
 }
 
-// Returns controller name.
-function controller()
-{
-    $route = router();
-    return $route['controller'];
-}
-
 // Fill in the template with the data and place the result in the variable.
 function view($data, $controller, $template)
 {
@@ -84,38 +77,44 @@ function view($data, $controller, $template)
     } else {
         throw new Exception('Template for this action not found!', 404);
     }
-
 }
 
 // Put together templates and return the finished page.
-function render($data, $controller, $template)
+function render($template)
 {
-    $data['content'] = view($data, $controller, $template);
+    $data = get_data($template);
+    $data['content'] = view($data, controller_name(), $template);
     return view($data, 'main', BASE_LAYOUT);
 }
 
-// Prepare and return the relevant data array.
-function get_data($action, $controller)
+// Returns controller name.
+function controller_name()
 {
-    $model = MODELS . '/' . $controller . '.mod.php';
-    if (is_file($model)) {
-        require_once $model;
-        if (isset($data["$action"])) {
-            return $data["$action"];
-        } else {
-            throw new Exception('Data for this controller not found!', 404);
-        }
-    } else {
-        throw new Exception('Model for this controller not found!', 404);
-    }
-
+    $route = router();
+    return $route['controller'];
 }
 
-// Initiates the preparation of data and templates.
-function run($action, $controller)
+// Returns model file path.
+function model_file()
 {
-    $data = get_data($action, $controller);
-    return render($data, $controller, $action);
+    $model = MODELS . '/' . controller_name() . '.mod.php';
+    if (is_file($model)) {
+        return $model;
+    } else {
+        throw new Exception('Model for controller "' . controller_name() . '" not found!');
+    }
+}
+
+// Prepare and return the relevant data array.
+function get_data($template)
+{
+    require_once model_file();
+    $function = 'get_' . $template . '_data';
+    if (function_exists($function)) {
+        return $function();
+    } else {
+        throw new Exception('Data for this controller not found!', 404);
+    }
 }
 
 /**

@@ -11,9 +11,9 @@ define('TEMPLATES', ROOT . '/templates');
 const BASE_LAYOUT = 'main';
 
 // Connection to database parameters.
-//const DB_DSN = 'mysql:host=localhost;dbname=(dbname);charset=utf8';
-//const DB_USER = '(user)';
-//const DB_PASSW = '(password)';
+const DB_DSN = 'mysql:host=localhost;dbname=unibep;charset=utf8';
+const DB_USER = 'root';
+const DB_PASSW = '2';
 
 // Exception handlers.
 set_exception_handler('my_exception_handler');

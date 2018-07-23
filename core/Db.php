@@ -17,11 +17,13 @@ class Db
         }
     }
 
-    public function execute($sql) {
+    public function execute($sql)
+    {
         return $this->dbh->exec($sql);
     }
 
-    public function get($sql) {
+    public function get($sql)
+    {
         $res = $this->dbh->query($sql);
         return $res->fetchAll(\PDO::FETCH_ASSOC);
     }

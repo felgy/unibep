@@ -6,18 +6,15 @@
 
 /**
  * Database object for data from the database, uncomment if necessary to work with DB.
- */ 
+ */
 // $db = new \core\Db();
 
 
-/**
- * Data collections for actions.
- * In $data array key there are action names.
- */
-$data = [];
-
-$data['index'] = [
-    'title' => 'SIA Unibep datu sistēma',
-    'description' => null,
-    'keywords' => null,
-];
+function get_index_data()
+{
+    return [
+        'title' => 'SIA Unibep datu sistēma',
+        'description' => null,
+        'keywords' => null,
+    ];
+}
