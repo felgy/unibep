@@ -1,5 +1,5 @@
 <p>Apstiprini darbinieka<span
-            class="drop-name"><?php echo $employee[0]['name']; ?><?php echo $employee[0]['lastname']; ?></span> dzēšanu!
+            class="drop-name"><?php echo $employee[0]['name']; ?>&nbsp;<?php echo $employee[0]['last_name']; ?></span> dzēšanu!
 </p>
 <form action="/employee/drop?id=<?php echo $employee[0]['id']; ?>" method="post">
     <label for="answer">Ieraksti darbinieka vārdu:</label>

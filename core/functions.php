@@ -6,22 +6,26 @@ spl_autoload_register(function ($class) {
 });
 
 // Exception  handler.
-function my_exception_handler($e)
+function exception_handler($e)
 {
-    show_error($e->getMessage(), $e->getCode());
+    show_error($e->getMessage(), $e->getCode(), $e->getFile(), $e->getLine());
 }
 
 // Display errors.
-function show_error($message, $code)
+function show_error($message, $code, $file, $line)
 {
     http_response_code($code);
     switch ($code) {
         case 404:
             $data['msg'] = $message;
+            $data['file'] = $file;
+            $data['line'] = $line;
             echo view($data, 'errors', '404');
             break;
         default:
             $data['msg'] = $message;
+            $data['file'] = $file;
+            $data['line'] = $line;
             $data['code'] = $code;
             echo view($data, 'errors', 'production');
             break;

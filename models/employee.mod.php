@@ -36,7 +36,7 @@ function get_delete_data()
 {
     $id = $_GET['id'];
     $db = new \core\Db();
-    $sql = "SELECT `id`, `name`, `lastname` FROM `employees` WHERE `id` = $id";
+    $sql = "SELECT `id`, `name`, last_name FROM `employees` WHERE `id` = $id";
     $employee = $db->get($sql);
 
     return [
@@ -48,51 +48,38 @@ function get_delete_data()
 function insert_employee($post)
 {
     $db = new \core\Db();
-    $sql = 'INSERT INTO `employees` (
-        `name`,
-        `lastname`,
-        `phone`,
-        `email`,
-        `role`,
-        `rate`
-    ) VALUES (
-        \'' . $post['name'] . '\',
-        \'' . $post['lastName'] . '\',
-        \'' . $post['phone'] . '\',
-        \'' . $post['email'] . '\',
-        \'' . $post['role'] . '\',
-        ' . $post['rate'] . '
-    )';
+    $values = array_values($post);
+    $data = implode(', ', array_map(function ($item) use ($db) {
+        return $db->quote($item);
+    }, $values));
+    $sql = "INSERT INTO `employees` (`name`, last_name, `phone`, `email`, `role`, `rate`) VALUES ($data)";
     return $db->execute($sql);
 }
 
 function update_employee($post)
 {
     $db = new \core\Db();
-    $id = $_GET['id'];
-    $sql = 'UPDATE `employees` 
-                SET 
-                    `name` = \'' . $post['name'] . '\',
-                    `lastName` = \'' . $post['lastName'] . '\',
-                    `phone` = \'' . $post['phone'] . '\',
-                    `email` = \'' . $post['email'] . '\',
-                    `role` = \'' . $post['role'] . '\',
-                    `rate` = ' . $post['rate'] . '
-                WHERE 
-                    `id` = ' . $id;
+    $id = $db->quote(filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT));
+    $values = array_values($post);
+    $assignment_list = '';
+    $fields = ['`name`', '`last_name`', '`phone`', '`email`', '`role`', '`rate`'];
+    for ($i = 0; $i < count($fields); $i++) {
+        $assignment_list .= $fields[$i] . ' = ' . $db->quote($values[$i]) . ',';
+    }
+    $assignment_list = rtrim($assignment_list, ',');
+    $sql = "UPDATE `employees` SET $assignment_list WHERE `id` = $id";
     return $db->execute($sql);
 }
 
 function drop_employee($post)
 {
     $db = new \core\Db();
-    $id = $_GET['id'];
-
-    $sql = 'SELECT `name` FROM `employees` WHERE `id` = ' . $id;
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    $sql = "SELECT `name` FROM `employees` WHERE `id` = $id";
     $employee = $db->get($sql);
-    $employee_name = $employee[0]['name'];
-    if ($post['name'] === $employee_name) {
-        $sql = 'DELETE FROM `employees` WHERE `id` = ' . $id;
+    $employee = $employee[0]['name'];
+    if ($post['name'] === $employee) {
+        $sql = "DELETE FROM `employees` WHERE `id` = $id";
         return $db->execute($sql);
     } else {
         return false;

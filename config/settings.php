@@ -16,4 +16,4 @@ const DB_USER = 'root';
 const DB_PASSW = '2';
 
 // Exception handlers.
-set_exception_handler('my_exception_handler');
+set_exception_handler('exception_handler');
