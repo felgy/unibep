@@ -1,29 +1,26 @@
 <?php
 
-spl_autoload_register(function ($class) {
-    require_once ROOT . '/' . str_replace('\\', '/', $class) . '.php';
-});
-
 function exception_handler($e)
 {
     show_error($e->getMessage(), $e->getCode(), $e->getFile(), $e->getLine());
 }
 
+spl_autoload_register(function ($class) {
+    require_once ROOT . '/' . str_replace('\\', '/', $class) . '.php';
+});
+
 function show_error($message, $code, $file, $line)
 {
     http_response_code($code);
+    $data['msg'] = $message;
+    $data['file'] = $file;
+    $data['line'] = $line;
+    $data['code'] = $code;
     switch ($code) {
         case 404:
-            $data['msg'] = $message;
-            $data['file'] = $file;
-            $data['line'] = $line;
             echo view($data, 'errors', '404');
             break;
         default:
-            $data['msg'] = $message;
-            $data['file'] = $file;
-            $data['line'] = $line;
-            $data['code'] = $code;
             echo view($data, 'errors', 'production');
             break;
     }
