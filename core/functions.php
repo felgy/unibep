@@ -1,5 +1,5 @@
 <?php
-
+// COMMON ===================================================================
 function exception_handler($e)
 {
     show_error($e->getMessage(), $e->getCode(), $e->getFile(), $e->getLine());
@@ -26,6 +26,58 @@ function show_error($message, $code, $file, $line)
     }
 }
 
+/**
+ * Return current controller name.
+ */
+function controller()
+{
+    $route = router();
+    return $route['controller'];
+}
+
+/**
+ * Return current action name.
+ */
+function action()
+{
+    $route = router();
+    return $route['action'];
+}
+
+/**
+ *  Returns model file path.
+ */
+function model()
+{
+    $model = MODELS . '/' . controller() . '.mod.php';
+    if (is_file($model)) {
+        return $model;
+    } else {
+        throw new Exception('Model for controller "' . controller() . '" not found!');
+    }
+}
+
+/**
+ * Formatted output. For development purposes.
+ * @param $value
+ * @param bool $mode | switch (print_r) to (var_dump).
+ */
+function debug($value, $mode = false)
+{
+    ob_start();
+    echo '<pre style="font-size:17px">';
+    if ($mode === false) {
+        print_r($value);
+    } else {
+        var_dump($value);
+    }
+    echo '</pre>';
+    ob_end_flush();
+}
+
+// COMMON ===================================================================
+
+// FRONT CONTROLLER =========================================================
 /**
  * Initiates the activity for generating the requested page.
  */
@@ -64,7 +116,26 @@ function router()
     }
     return $route;
 }
+// FRONT CONTROLLER =========================================================
 
+// MODEL ====================================================================
+/**
+ * Prepare the function name and call to get template data from the model.
+ * @param $template
+ */
+function get_data($template)
+{
+    require_once model();
+    $action = 'get_' . $template . '_data';
+    if (function_exists($action)) {
+        return $action();
+    } else {
+        throw new Exception('Data for action "' . $action . '" not found!', 404);
+    }
+}
+// MODEL ====================================================================
+
+// VIEW =====================================================================
 /**
  * Fill in the template with the data and return the result in the string.
  * @param $data 
@@ -96,67 +167,4 @@ function render($template)
     $data['content'] = view($data, controller(), $template);
     return view($data, 'main', BASE_LAYOUT);
 }
-
-/**
- * Return current controller name.
- */
-function controller()
-{
-    $route = router();
-    return $route['controller'];
-}
-
-/**
- * Return current action name.
- */
-function action()
-{
-    $route = router();
-    return $route['action'];
-}
-
-/**
- *  Returns model file path.
- */
-function model()
-{
-    $model = MODELS . '/' . controller() . '.mod.php';
-    if (is_file($model)) {
-        return $model;
-    } else {
-        throw new Exception('Model for controller "' . controller() . '" not found!');
-    }
-}
-
-/**
- * Prepare the function name and call to get template data from the model.
- * @param $template
- */
-function get_data($template)
-{
-    require_once model();
-    $action = 'get_' . $template . '_data';
-    if (function_exists($action)) {
-        return $action();
-    } else {
-        throw new Exception('Data for action "' . $action . '" not found!', 404);
-    }
-}
-
-/**
- * Formatted output. For development purposes.
- * @param $value
- * @param bool $mode | switch (print_r) to (var_dump).
- */
-function debug($value, $mode = false)
-{
-    ob_start();
-    echo '<pre style="font-size:17px">';
-    if ($mode === false) {
-        print_r($value);
-    } else {
-        var_dump($value);
-    }
-    echo '</pre>';
-    ob_end_flush();
-}
+// VIEW =====================================================================
