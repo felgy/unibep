@@ -58,6 +58,21 @@ function model()
 }
 
 /**
+ * Verify the data entered in the form fields correctly.
+ */
+function check_input($value, $type)
+{
+
+}
+
+/**
+ * Returns the JSON representation of a POST value.
+ */
+function post() {
+    return json_encode($_POST);
+}
+
+/**
  * Formatted output. For development purposes.
  * @param $value
  * @param bool $mode | switch (print_r) to (var_dump).
@@ -133,12 +148,12 @@ function get_data($template)
         throw new Exception('Data for action "' . $action . '" not found!', 404);
     }
 }
-// MODEL ====================================================================
+// MODEL =====================================================================
 
-// VIEW =====================================================================
+// VIEW ======================================================================
 /**
  * Fill in the template with the data and return the result in the string.
- * @param $data 
+ * @param $data
  * @param $controller
  * @param $template
  */

@@ -37,12 +37,22 @@ class Db
         }
     }
 
-    public function get($sql)
+    public function getAll($sql)
     {
         try {
             $sth = $this->dbh->query($sql);
             return $sth->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
+            throw new \PDOException($e->getMessage());
+        }
+    }
+
+    public function getOne($sql)
+    {
+        try{
+            $sth = $this->dbh->query($sql);
+            return $sth->fetchColumn();
+        } catch (\PDOException $e){
             throw new \PDOException($e->getMessage());
         }
     }

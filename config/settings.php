@@ -1,5 +1,9 @@
 <?php
 
+set_exception_handler('exception_handler');
+
+session_start();
+
 // Files paths.
 define('ROOT', dirname(__DIR__));
 define('PUBLIC', ROOT . '/public');
@@ -8,12 +12,9 @@ define('MODELS', ROOT . '/models');
 define('TEMPLATES', ROOT . '/templates');
 
 // Active main HTML layout.
-const BASE_LAYOUT = 'main';
+define('BASE_LAYOUT', 'main');
 
 // Connection to database parameters.
-const DB_DSN = 'mysql:host=localhost;dbname=unibep;charset=utf8';
-const DB_USER = 'root';
-const DB_PASSW = '2';
-
-// Exception handlers.
-set_exception_handler('exception_handler');
+define('DB_DSN', 'mysql:host=localhost;dbname=unibep;charset=utf8');
+define('DB_USER', 'root');
+define('DB_PASSW', '2');

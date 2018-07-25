@@ -2,10 +2,10 @@
 
 function get_index_data()
 {
+    unset($_SESSION['msg']);
     $db = new \core\Db();
-    $sql = "SELECT * FROM `employees`";
-    $employees = $db->get($sql);
-
+    $expr = "SELECT * FROM `employees`";
+    $employees = $db->getAll($expr);
     return [
         'title' => 'Darbinieku saraksts',
         'employees' => $employees,
@@ -14,34 +14,48 @@ function get_index_data()
 
 function get_add_data()
 {
+    $display = !empty($_SESSION['msg']) ? 'show' : 'hidden';
+    $message = isset($_SESSION['msg']) ? $_SESSION['msg'] : null;
     return [
         'title' => 'Darbinieka pievienošana',
+        'display' => $display,
+        'message' => $message,
     ];
 }
 
 function get_update_data()
 {
+    $display = !empty($_SESSION['msg']) ? 'show' : 'hidden';
+    $message = isset($_SESSION['msg']) ? $_SESSION['msg'] : null;
     $id = $_GET['id'];
     $db = new \core\Db();
-    $sql = "SELECT * FROM `employees` WHERE `id` = $id";
-    $employee = $db->get($sql);
+    $expr = "SELECT * FROM `employees` WHERE `id` = $id";
+    $employee = $db->getAll($expr);
 
     return [
         'title' => 'Darbinieka datu izmaiņas',
         'employee' => $employee,
+        'display' => $display,
+        'message' => $message,
     ];
 }
 
 function get_delete_data()
 {
+    $display = !empty($_SESSION['msg']) ? 'show' : 'hidden';
+    $message = isset($_SESSION['msg']) ? $_SESSION['msg'] : null;
     $id = $_GET['id'];
     $db = new \core\Db();
-    $sql = "SELECT `id`, `name`, last_name FROM `employees` WHERE `id` = $id";
-    $employee = $db->get($sql);
-
+    $expr = "SELECT `id`, `name`, `last_name` FROM `employees` WHERE `id` = $id";
+    $employee = $db->getAll($expr);
+    if (empty($employee)) {
+        $employee = null;
+    }
     return [
         'title' => 'Darbinieka dzēšana',
         'employee' => $employee,
+        'display' => $display,
+        'message' => $message,
     ];
 }
 
@@ -52,14 +66,13 @@ function insert_employee($post)
     $data = implode(', ', array_map(function ($item) use ($db) {
         return $db->quote($item);
     }, $values));
-    $sql = "INSERT INTO `employees` (`name`, last_name, `phone`, `email`, `role`, `rate`) VALUES ($data)";
-    return $db->execute($sql);
+    $expr = "INSERT INTO `employees` (`name`, `last_name`, `phone`, `email`, `role`, `rate`) VALUES ($data)";
+    return $db->execute($expr);
 }
 
-function update_employee($post)
+function update_employee($post, $id)
 {
     $db = new \core\Db();
-    $id = $db->quote(filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT));
     $values = array_values($post);
     $assignment_list = '';
     $fields = ['`name`', '`last_name`', '`phone`', '`email`', '`role`', '`rate`'];
@@ -67,21 +80,27 @@ function update_employee($post)
         $assignment_list .= $fields[$i] . ' = ' . $db->quote($values[$i]) . ',';
     }
     $assignment_list = rtrim($assignment_list, ',');
-    $sql = "UPDATE `employees` SET $assignment_list WHERE `id` = $id";
-    return $db->execute($sql);
+    $expr = "UPDATE `employees` SET $assignment_list WHERE `id` = $id";
+    return $db->execute($expr);
 }
 
-function drop_employee($post)
+/**
+ * Deletes employee data from database.
+ * Compares the name of the confirmation form with the database.
+ * @param $post_name
+ * @param $id
+ * @return bool|int
+ */
+function drop_employee($post_name, $id)
 {
     $db = new \core\Db();
-    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-    $sql = "SELECT `name` FROM `employees` WHERE `id` = $id";
-    $employee = $db->get($sql);
-    $employee = $employee[0]['name'];
-    if ($post['name'] === $employee) {
-        $sql = "DELETE FROM `employees` WHERE `id` = $id";
-        return $db->execute($sql);
-    } else {
-        return false;
+
+    $expr = "SELECT `name` FROM `employees` WHERE `id` = $id";
+    $db_name = $db->getOne($expr);
+
+    if ($post_name === $db_name) {
+        $expr = "DELETE FROM `employees` WHERE `id` = $id";
+        return $db->execute($expr);
     }
+    return false;
 }
