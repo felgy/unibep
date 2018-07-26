@@ -58,6 +58,19 @@ function model()
 }
 
 /**
+ * Returns GET params.
+ */
+function get_params()
+{
+    $params = [];
+    $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
+    if (count($segments) > 1) {
+        parse_str(array_pop($segments), $params);
+    }
+    return $params;
+}
+
+/**
  * Verify the data entered in the form fields correctly.
  */
 function check_input($value, $type)
@@ -68,7 +81,8 @@ function check_input($value, $type)
 /**
  * Returns the JSON representation of a POST value.
  */
-function post() {
+function post()
+{
     return json_encode($_POST);
 }
 
@@ -113,24 +127,25 @@ function get_page()
 }
 
 /**
- * Cut GET parameters from request and return controller and model.
+ * Return from request controller and model.
  */
 function router()
 {
-    $route = [
+    $routes = [
         'controller' => 'home',
         'action' => 'index',
     ];
     $uri = explode('?', $_SERVER['REQUEST_URI']);
     $segments = explode('/', trim($uri[0], '/'), 2);
     if (!empty($segments[0])) {
-        $route['controller'] = $segments[0];
+        $routes['controller'] = $segments[0];
         if (!empty($segments[1])) {
-            $route['action'] = $segments[1];
+            $routes['action'] = $segments[1];
         }
     }
-    return $route;
+    return $routes;
 }
+
 // FRONT CONTROLLER =========================================================
 
 // MODEL ====================================================================
@@ -148,6 +163,7 @@ function get_data($template)
         throw new Exception('Data for action "' . $action . '" not found!', 404);
     }
 }
+
 // MODEL =====================================================================
 
 // VIEW ======================================================================

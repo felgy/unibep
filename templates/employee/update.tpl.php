@@ -1,6 +1,6 @@
 <h1>Darbinieka datu izmainīšana</h1>
 <p class="<?php echo $display?>"><?php echo $message?></p>
-<form class="form" action="/employee/change?id=<?php  echo $employee[0]['id'] ;?>" method="POST">
+<form class="form" action="/employee/update?id=<?php  echo $employee[0]['id'] ;?>" method="POST">
     <input type="text" name="name" id="name" value="<?php  echo $employee[0]['name'] ;?>">
     <input type="text" name="last_name" id="last_name" value="<?php  echo $employee[0]['last_name'] ;?>">
     <input type="text" name="phone" id="phone" value="<?php  echo $employee[0]['phone'] ;?>">
