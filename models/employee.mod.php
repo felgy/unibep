@@ -40,7 +40,7 @@ function get_update_data()
     ];
 }
 
-function get_delete_data()
+function get_drop_data()
 {
     $display = !empty($_SESSION['msg']) ? 'show' : 'hidden';
     $message = isset($_SESSION['msg']) ? $_SESSION['msg'] : null;
@@ -59,7 +59,7 @@ function get_delete_data()
     ];
 }
 
-function insert_employee($post)
+function add_employee($post)
 {
     $db = new \core\Db();
     $values = array_values($post);
@@ -70,10 +70,11 @@ function insert_employee($post)
     return $db->execute($expr);
 }
 
-function update_employee($post, $id)
+function update_employee($post, $get)
 {
     $db = new \core\Db();
     $values = array_values($post);
+    $id = $get['id'];
     $assignment_list = '';
     $fields = ['`name`', '`last_name`', '`phone`', '`email`', '`role`', '`rate`'];
     for ($i = 0; $i < count($fields); $i++) {
@@ -91,14 +92,14 @@ function update_employee($post, $id)
  * @param $id
  * @return bool|int
  */
-function drop_employee($post_name, $id)
+function drop_employee($post, $get)
 {
     $db = new \core\Db();
-
+    $id = $get['id'];
     $expr = "SELECT `name` FROM `employees` WHERE `id` = $id";
     $db_name = $db->getOne($expr);
 
-    if ($post_name === $db_name) {
+    if ($post['name'] === $db_name) {
         $expr = "DELETE FROM `employees` WHERE `id` = $id";
         return $db->execute($expr);
     }

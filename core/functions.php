@@ -38,7 +38,7 @@ function controller()
 /**
  * Return current action name.
  */
-function action()
+function current_action()
 {
     $route = router();
     return $route['action'];
@@ -62,11 +62,8 @@ function model()
  */
 function get_params()
 {
-    $params = [];
-    $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
-    if (count($segments) > 1) {
-        parse_str(array_pop($segments), $params);
-    }
+    $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
+    parse_str($url, $params);
     return $params;
 }
 
@@ -113,7 +110,7 @@ function debug($value, $mode = false)
 function get_page()
 {
     $controller = CONTROLLERS . '/' . controller() . '.con.php';
-    $action = action();
+    $action = current_action();
     if (is_file($controller)) {
         require_once $controller;
         if (function_exists($action)) {
@@ -135,12 +132,13 @@ function router()
         'controller' => 'home',
         'action' => 'index',
     ];
-    $uri = explode('?', $_SERVER['REQUEST_URI']);
-    $segments = explode('/', trim($uri[0], '/'), 2);
+
+    $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $segments = explode('/', trim($url, '/'), 2);
     if (!empty($segments[0])) {
-        $routes['controller'] = $segments[0];
+        $routes['controller'] = strtolower($segments[0]);
         if (!empty($segments[1])) {
-            $routes['action'] = $segments[1];
+            $routes['action'] = strtolower($segments[1]);
         }
     }
     return $routes;
@@ -183,7 +181,7 @@ function view($data, $controller, $template)
         require_once $template;
         return ob_get_clean();
     } else {
-        throw new Exception('Template for action "' . action() . '" not found!', 404);
+        throw new Exception('Template for action "' . current_action() . '" not found!', 404);
     }
 }
 
